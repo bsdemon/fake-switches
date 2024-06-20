@@ -1,6 +1,14 @@
--e git+https://github.com/stephanerobert/tftpy.git@master#egg=tftpy
-cryptography<3; python_version<'3'
-cryptography<3; python_version=='3.5'
+appdirs==1.4.4
+cffi==1.15.1
+constantly==15.1.0
+cryptography==2.9.2
+incremental==22.10.0
+lxml==4.6.3
+pyasn1==0.4.8
+pycparser==2.21
+six==1.16.0
+-e git+https://github.com/stephanerobert/tftpy.git@55f8a53f175213491f85a75ba6b43493fdd436af#egg=tftpy
+Twisted==16.6.0
+typing>=3.7
+zope.interface==5.5.2
 netaddr>=0.7.13
-Twisted[conch]>=16.6.0, <17.0
-lxml>=3.7
