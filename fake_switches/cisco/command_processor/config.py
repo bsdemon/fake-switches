@@ -66,6 +66,7 @@ class ConfigCommandProcessor(BaseCommandProcessor):
             self.switch_configuration.add_static_route(static_route)
 
     def do_interface(self, *args):
+        print("Inside interface")
         interface_name = self.interface_separator.join(args)
         port = self.switch_configuration.get_port_by_partial_name(interface_name)
         if port:

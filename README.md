@@ -227,6 +227,32 @@ easily added. Send your pull requests :)
 
 Contributing
 ============
-
 Feel free raise issues and send some pull request,
 we'll be happy to look at them!
+
+Requirements
+============
+
+This fork must be run with Python3.8
+```
+python3.8 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+RUN
+===
+```
+pip install -e .
+fake-switches --model ${SWITCH_MODEL:-cisco_generic} \
+    --hostname ${SWITCH_HOSTNAME:-switch} \
+    --username ${SWITCH_USERNAME:-root} \
+    --password ${SWITCH_PASSWORD:-root} \
+    --listen-host ${LISTEN_HOST:-0.0.0.0} \
+    --listen-port ${LISTEN_PORT:-10022}
+```
+or build docker image and run it:
+```
+docker build -t fake_switches .
+docker run --name fake_olt -d -p -e SWITCH_MODEL=cisco_2960_48TT_L fake_switches
+```
