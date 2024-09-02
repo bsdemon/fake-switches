@@ -37,10 +37,28 @@ class ConfigCommandProcessor(BaseCommandProcessor):
         self.write_line("% Invalid input detected at '^' marker (not such interface)")
         self.write_line("")
 
+    def do_show(self, *args):
+        if "onu info".startswith(args[0]):
+            self.show_onu_info()
+        else:
+            self.write_line("                               ^")
+            self.write_line("% Invalid input detected at '^' marker.")
+        self.write_line("")
+        return
+    
+    def show_onu_info(self):
+        all_data = self.switch_configuration.onu_list
+        self.write_line("Onuindex   Model                Profile                Mode    AuthInfo ")
+        self.write_line("---------------------------------------------------------------------------------------------")
+        for l in all_data:
+            self.write_line(l)
+            self.write_line("")
 
     def do_interface(self, *args):
-        print("Inside interface")
         interface_name = self.interface_separator.join(args)
+        for p in self.switch_configuration.ports:
+            print("Port: ", p.name)
+            
         port = self.switch_configuration.get_port_by_partial_name(interface_name)
         if port:
             self.move_to(self.config_interface_processor, port)

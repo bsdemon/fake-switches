@@ -33,8 +33,10 @@ class BaseCommandProcessor(CommandProcessor):
         self.is_done = False
         self.replace_input = False
         self.awaiting_keystroke = False
+        self.onu_configuration = None
 
     def process_command(self, line):
+        print(f"Inside BaseCommandProcessor process_command {line}")
         if " | " in line:
             line, piping_command = line.split(" | ", 1)
             piping_started = self.activate_piping(piping_command)
