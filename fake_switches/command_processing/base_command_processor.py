@@ -46,12 +46,15 @@ class BaseCommandProcessor(CommandProcessor):
         processed = False
 
         if self.sub_processor:
+            print(f"Delegating {line} to {self.sub_processor}")
             processed = self.delegate_to_sub_processor(line)
 
         if not processed:
+            print(f"Processing {line} in {self.sub_processor}")
             if self.continuing_to:
                 processed = self.continue_command(line)
             else:
+                print(f"EXECUTE -->>{line} to {self.sub_processor}")
                 processed = self.parse_and_execute_command(line)
 
             if not self.continuing_to and not self.awaiting_keystroke and not self.is_done and processed and not self.sub_processor:

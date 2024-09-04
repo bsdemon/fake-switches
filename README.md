@@ -253,6 +253,6 @@ fake-switches --model ${SWITCH_MODEL:-cisco_generic} \
 ```
 or build docker image and run it:
 ```
-docker build -t fake_switches .
-docker run --name fake_olt -d -p -e SWITCH_MODEL=cisco_2960_48TT_L fake_switches
+docker build -t fake_switch .
+docker run --name fake_syrotech_gpon -d -p 10022:22 -p 10023:23 -e SWITCH_MODEL=syrotech_generic fake_switch
 ```

@@ -22,7 +22,7 @@ DEFAULT_MAPPING = {
     'juniper_generic': juniper_core.JuniperSwitchCore,
     'juniper_qfx_copper_generic': juniper_qfx_copper_core.JuniperQfxCopperSwitchCore,
     'juniper_mx_generic': juniper_mx_core.JuniperMXSwitchCore,
-    'syrotech_generic': syrotech_core.SyrotechOLTCore,
+    'syrotech_generic': syrotech_core.SyrotechGPONOLTCore,
 }
 
 

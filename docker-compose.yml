@@ -1,12 +1,114 @@
-version: '2'
+version: '3.8'
 
 services:
-  tsr1.yul1.example.net:
-    image: "internap/fake-switches:latest"
-    environment:
-      - SWITCH_MODEL=cisco_2960_48TT_L
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.gateway
+    container_name: gateway
+    # environment:
+    #   - SSH_KEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDejbq0RvAYNESUT6PBjs4sGT/EW6crvdF64wPoI+l5toy+G02nSsSeT9kDz07Sy/DV6wZUl51BLIG820CAXrmNCSmmj0xlzGxZK1GTv8RvNJT1gLJ+vSkpndbE/jYUtwRlyicQVXtILojJpF9JnkhtvuaPdgazJH0Tg00IXUSFy/b6LVhR/S5ouTF2KmraKDLPyuPPgV0SIvXFKncVQPGa+6u0poCi2g/yE+Aja7kOuL37vJ0pqlNhREA7ndUwiH90PmyDup64bmQumUQSZDAhMwsbWqvzoRbynh5HnHMvL3EOwPGDUuksIzb6VOtn2stGYhGao6zjWjrOkC6rnsgnpBx4y6uIp+hj8qGTFtoU3KZb/AJX9phVoxutgKVSYPJW2tLgIZZlUktF1siCMcQLYA8sQxKnimWHzC52xbLa6MD8zSF/XaJNa/IY6xgUGMyP5ok0G5+ENuDCDiSiXdMLGpSitu78ssFP86QG+Af+rB4WGV7IbaROjhL+6YCsuBE= eon@torbalan   # You can replace this with your actual SSH public key
+    ports:
+      - "2222:22"  # Expose SSH port to the host
+    networks:
+      internal_net:
+        ipv4_address: 192.168.1.100
+    volumes:
+      - /home/eon/.ssh/id_rsa.pub:/root.ssh/authorized_keys
 
-  tor1.yul1.example.net:
-    image: "internap/fake-switches:latest"
+  fake_switch_1:
+    container_name: switch_1
+    # image: fake_switch
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
-      - SWITCH_MODEL=cisco_2960_48TT_L
+      - SWITCH_MODEL=syrotech_generic
+    networks:
+      internal_net:
+        ipv4_address: 192.168.1.101
+
+  fake_switch_2:
+    container_name: switch_2
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SWITCH_MODEL=syrotech_generic
+    networks:
+      internal_net:
+        ipv4_address: 192.168.1.102
+
+  fake_switch_3:
+    container_name: switch_3
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SWITCH_MODEL=syrotech_generic
+    networks:
+      internal_net:
+        ipv4_address: 192.168.1.103
+
+  fake_switch_4:
+    container_name: switch_4
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SWITCH_MODEL=syrotech_generic
+    networks:
+      internal_net:
+        ipv4_address: 192.168.1.104
+
+  fake_switch_5:
+    container_name: switch_5
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SWITCH_MODEL=syrotech_generic
+    networks:
+      internal_net:
+        ipv4_address: 192.168.1.105
+
+  fake_switch_6:
+    container_name: switch_6
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SWITCH_MODEL=syrotech_generic
+    networks:
+      internal_net:
+        ipv4_address: 192.168.1.106
+
+  fake_switch_7:
+    container_name: switch_7
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SWITCH_MODEL=syrotech_generic
+    networks:
+      internal_net:
+        ipv4_address: 192.168.1.107
+
+  fake_switch_8:
+    container_name: switch_8
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SWITCH_MODEL=syrotech_generic
+    networks:
+      internal_net:
+        ipv4_address: 192.168.1.108
+
+networks:
+  internal_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
+

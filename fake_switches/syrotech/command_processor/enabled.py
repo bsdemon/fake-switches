@@ -21,9 +21,10 @@ class EnabledCommandProcessor(BaseCommandProcessor):
     def __init__(self, config):
         super(EnabledCommandProcessor, self).__init__()
         self.config_processor = config
+        # self.nomral_processor = new_command_processor()
 
     def get_prompt(self):
-        return self.switch_configuration.name + "#"
+        return f"{self.switch_configuration.name}# "
 
     def do_enable(self, *args):
         pass
@@ -38,9 +39,9 @@ class EnabledCommandProcessor(BaseCommandProcessor):
                 self.show_run()
             elif "interface".startswith(args[1]):
                 if_name = "".join(args[2:])
-                port = self.switch_configuration.get_port_by_partial_name(if_name)
-
-                if port:
+                if port := self.switch_configuration.get_port_by_partial_name(
+                    if_name
+                ):
                     self.write_line("Building configuration...")
                     self.write_line("")
 
@@ -49,15 +50,12 @@ class EnabledCommandProcessor(BaseCommandProcessor):
                     self.write_line("Current configuration : %i bytes" % (len("\n".join(data)) + 1))
                     [self.write_line(l) for l in data]
                 else:
-                    self.write_line("                               ^")
-                    self.write_line("% Invalid input detected at '^' marker.")
-                    self.write_line("")
+                    self.write_line("% Unknown command.")
+
         elif "version".startswith(args[0]):
             self.show_version()
         else:
-            self.write_line("                               ^")
-            self.write_line("% Invalid input detected at '^' marker.")
-            self.write_line("")
+            self.write_line("% Unknown command. \n")
         return
 
     def do_terminal(self, *args):
@@ -71,6 +69,7 @@ class EnabledCommandProcessor(BaseCommandProcessor):
     def do_exit(self):
         self.is_done = True
 
+    
     def show_run(self):
         all_data = [
         "!",
@@ -163,3 +162,4 @@ def build_running_interface(port):
     if port.ntp is False:
         data.append(" ntp disable")
     return data
+

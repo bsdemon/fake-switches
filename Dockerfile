@@ -1,7 +1,9 @@
-FROM python:3.5-alpine
+FROM python:3.8
 
-RUN apk update && apk add --no-cache python3-dev gcc git g++ make libffi-dev openssl-dev libxml2 libxml2-dev libxslt libxslt-dev
-
+RUN apt update && apt install -y gcc git g++ make libxml2-dev libxslt-dev libffi-dev libssl-dev
+# RUN apk update && apk add --no-cache python3-dev \
+# gcc git g++ make libffi-dev openssl-dev libxml2 libxml2-dev \
+# libxslt libxslt-dev pkgconfig
 #
 # NOTE(mmitchell): Mimick -onbuild using -alpine image.
 #                  ONBUILD statements removed because this is an actual Dockerfile
@@ -10,6 +12,7 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 COPY requirements.txt /usr/src/app/
+RUN pip install -U pip setuptools
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /usr/src/app

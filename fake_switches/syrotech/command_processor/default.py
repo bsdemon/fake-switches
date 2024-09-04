@@ -21,13 +21,7 @@ class DefaultCommandProcessor(BaseCommandProcessor):
         self.enabled_processor = enabled
 
     def get_prompt(self):
-        return self.switch_configuration.name + ">"
-
-    def delegate_to_sub_processor(self, line):
-        processed = self.sub_processor.process_command(line)
-        if self.sub_processor.is_done:
-            self.is_done = True
-        return processed
+        return f"{self.switch_configuration.name}> "
 
     def do_enable(self):
         self.write("Password: ")
@@ -36,9 +30,15 @@ class DefaultCommandProcessor(BaseCommandProcessor):
 
     def continue_enabling(self, line):
         self.replace_input = False
-        if line == "" or line in self.switch_configuration.privileged_passwords:
-            self.move_to(self.enabled_processor)
-        else:
-            self.write_line("% Access denied")
-            self.write_line("")
+        self.move_to(self.enabled_processor)
+        
+        # NOTE: Use this if you want to check the password in enable mode
+        # self.replace_input = False
+        # if line == "" or line in self.switch_configuration.privileged_passwords:
+        #     self.move_to(self.enabled_processor)
+        # else:
+        #     self.write_line("% Access denied")
+        #     self.write_line("")
 
+    def do_exit(self):
+        self.is_done = True

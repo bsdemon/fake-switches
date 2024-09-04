@@ -20,6 +20,7 @@ from fake_switches.syrotech.command_processor.config_interface import ConfigInte
 from fake_switches.syrotech.command_processor.default import DefaultCommandProcessor
 from fake_switches.syrotech.command_processor.enabled import EnabledCommandProcessor
 from fake_switches.syrotech.command_processor.piping import PipingProcessor
+from fake_switches.syrotech.command_processor.debug import DebugCommandProcessor
 from fake_switches.command_processing.shell_session import ShellSession
 from fake_switches.switch_configuration import Port
 from fake_switches.terminal import LoggingTerminalController
@@ -32,6 +33,7 @@ class BaseSyrotechOLTCore(switch_core.SwitchCore):
         self.switch_configuration.onu_list = gpon_onus_list
         self.logger = None
         self.last_connection_id = 0
+        self.switch_configuration.name = "syrotech"
 
     def launch(self, protocol, terminal_controller):
         self.last_connection_id += 1
@@ -79,10 +81,20 @@ class BaseSyrotechOLTCore(switch_core.SwitchCore):
 
 
 class SyrotechGPONOLTCore(BaseSyrotechOLTCore):
+    def __init__(self, switch_configuration):
+        super(SyrotechGPONOLTCore, self).__init__(switch_configuration)
+        self.switch_configuration.add_vlan(self.switch_configuration.new("Vlan", 1))
+        self.switch_configuration.onu_list = gpon_onus_list
+        self.logger = None
+        self.last_connection_id = 0
+        self.switch_configuration.name = "syrotech-gpon"
+        # self.reboot_console = self.new_command_processor()
+    
     def new_command_processor(self):
         return EnabledCommandProcessor(
             config=ConfigCommandProcessor(
-                config_interface=ConfigInterfaceCommandProcessor()
+                config_interface=ConfigInterfaceCommandProcessor(),
+                debug=DebugCommandProcessor()
             )
         )
 
@@ -92,7 +104,7 @@ SyrotechOLTCore = SyrotechGPONOLTCore  # Backward compatibility
 
 class SyrotechShellSession(ShellSession):
     def handle_unknown_command(self, line):
-        self.command_processor.terminal_controller.write("No such command : %s\n" % line)
+        self.command_processor.terminal_controller.write("% Unknown command. \n")
 
 
 class Syrotech_GPON_OLT_Core(SyrotechOLTCore):

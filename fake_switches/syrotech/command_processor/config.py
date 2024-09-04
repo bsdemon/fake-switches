@@ -15,34 +15,31 @@
 import re
 
 from fake_switches.command_processing.base_command_processor import BaseCommandProcessor
-from fake_switches.switch_configuration import VlanPort, AggregatedPort
 
 
 class ConfigCommandProcessor(BaseCommandProcessor):
     interface_separator = ""
 
-    def __init__(self, config_interface):
+    def __init__(self, config_interface, debug):
         super(ConfigCommandProcessor, self).__init__()
         self.config_interface_processor = config_interface
+        self.debug_mode = debug
 
     def get_prompt(self):
-        return f"{self.switch_configuration.name}(config)#"
-
+        return f"{self.switch_configuration.name}(config)# "
 
     def do_exit(self):
         self.is_done = True
 
     def show_unknown_interface_error_message(self):
-        self.write_line("              ^")
-        self.write_line("% Invalid input detected at '^' marker (not such interface)")
-        self.write_line("")
+        self.write_line("% Unknown command.")
 
     def do_show(self, *args):
         if "onu info".startswith(args[0]):
             self.show_onu_info()
         else:
-            self.write_line("                               ^")
-            self.write_line("% Invalid input detected at '^' marker.")
+            self.write_line("")
+            self.write_line("% Unknown command.")
         self.write_line("")
         return
     
@@ -54,24 +51,46 @@ class ConfigCommandProcessor(BaseCommandProcessor):
             self.write_line(l)
             self.write_line("")
 
+    def do_debug_mode(self, *args):
+        self.move_to(self.debug_mode)
+        
+    def do_reboot(self):
+        self.write_line("Rebooting...")
+        self.is_done = True
+        
     def do_interface(self, *args):
         interface_name = self.interface_separator.join(args)
         for p in self.switch_configuration.ports:
             print("Port: ", p.name)
-            
-        port = self.switch_configuration.get_port_by_partial_name(interface_name)
-        if port:
+
+        if port := self.switch_configuration.get_port_by_partial_name(
+            interface_name
+        ):
             self.move_to(self.config_interface_processor, port)
+        elif m := re.match(
+            "vlan{separator}(\d+)".format(separator=self.interface_separator),
+            interface_name.lower(),
+        ):
+            vlan_id = int(m.groups()[0])
+            new_vlan_interface = self.make_vlan_port(vlan_id, interface_name)
+            self.switch_configuration.add_port(new_vlan_interface)
+            self.move_to(self.config_interface_processor, new_vlan_interface)
+        elif interface_name.lower().startswith('port-channel'):
+            new_int = self.make_aggregated_port(interface_name)
+            self.switch_configuration.add_port(new_int)
+            self.move_to(self.config_interface_processor, new_int)
         else:
-            m = re.match("vlan{separator}(\d+)".format(separator=self.interface_separator), interface_name.lower())
-            if m:
-                vlan_id = int(m.groups()[0])
-                new_vlan_interface = self.make_vlan_port(vlan_id, interface_name)
-                self.switch_configuration.add_port(new_vlan_interface)
-                self.move_to(self.config_interface_processor, new_vlan_interface)
-            elif interface_name.lower().startswith('port-channel'):
-                new_int = self.make_aggregated_port(interface_name)
-                self.switch_configuration.add_port(new_int)
-                self.move_to(self.config_interface_processor, new_int)
-            else:
-                self.show_unknown_interface_error_message()
+            self.show_unknown_interface_error_message()
+
+    def do_reboot(self):
+        self.write("Are you sure want to reboot system? [Y/N]")
+        self.replace_input = ''
+        self.continue_to(self.continue_rebooting)
+
+    def continue_rebooting(self, line):
+        self.replace_input = False
+        if line.lower() == "y":
+            self.write_line("Rebooting!")
+            raise SystemExit
+        else:
+            self.write_line("")
