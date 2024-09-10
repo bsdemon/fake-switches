@@ -14,7 +14,7 @@ services:
       internal_net:
         ipv4_address: 192.168.1.100
     volumes:
-      - /home/eon/.ssh/id_rsa.pub:/root.ssh/authorized_keys
+      - /home/eon/.ssh/id_rsa.pub:/root/.ssh/authorized_keys
 
   fake_switch_1:
     container_name: switch_1
