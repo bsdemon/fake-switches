@@ -1,18 +1,49 @@
-FROM ubuntu:latest
+# FROM ubuntu:latest
 
-RUN apt-get update && apt-get install -y openssh-server && mkdir /var/run/sshd
+# RUN apt-get update && apt-get install -y openssh-server && mkdir /var/run/sshd
 
+# RUN mkdir -p /root/.ssh && chmod 700 /root/.ssh
+
+# RUN echo "AuthorizedKeysFile .ssh/authorized_keys" >> /etc/ssh/sshd_config
+# RUN echo "RSAAuthentication yes" >> /etc/ssh/sshd_config
+# RUN sed -i "s/#PubkeyAuthentication yes/PubkeyAuthentication yes/" /etc/ssh/sshd_config
+
+
+# RUN echo "KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256" >> /etc/ssh/sshd_config
+# RUN echo "Ciphers aes256-ctr,aes192-ctr,aes128-ctr" >> /etc/ssh/sshd_config
+# RUN echo "MACs hmac-sha2-256,hmac-sha2-512" >> /etc/ssh/sshd_config
+
+# EXPOSE 22
+
+# CMD bash -c 'echo "$SSH_KEY" > /root/.ssh/authorized_keys && chmod 600 /root/.ssh/authorized_keys && /usr/sbin/sshd -D -ddd'
+
+# Use Ubuntu as the base image
+FROM ubuntu:20.04
+
+# Install OpenSSH server and SSH client
+RUN apt-get update && \
+    apt-get install -y openssh-server openssh-client && \
+    mkdir /var/run/sshd
+
+# Create SSH directory and set permissions
 RUN mkdir -p /root/.ssh && chmod 700 /root/.ssh
+RUN mkdir -p /root/ssh_keys
 
-RUN echo "AuthorizedKeysFile .ssh/authorized_keys" >> /etc/ssh/sshd_config
-RUN echo "RSAAuthentication yes" >> /etc/ssh/sshd_config
-RUN sed -i "s/#PubkeyAuthentication yes/PubkeyAuthentication yes/" /etc/ssh/sshd_config
+# Generate SSH key pair in /root/ssh_keys
+RUN ssh-keygen -t rsa -b 2048 -f /root/ssh_keys/id_rsa -q -N ""
 
+# Copy the generated public key to authorized_keys
+RUN cat /root/ssh_keys/id_rsa.pub > /root/.ssh/authorized_keys && chmod 600 /root/.ssh/authorized_keys
 
-RUN echo "KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256" >> /etc/ssh/sshd_config
-RUN echo "Ciphers aes256-ctr,aes192-ctr,aes128-ctr" >> /etc/ssh/sshd_config
-RUN echo "MACs hmac-sha2-256,hmac-sha2-512" >> /etc/ssh/sshd_config
+# Configure SSH: allow root login only with keys
+RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config && \
+    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+    echo "Port 22" >> /etc/ssh/sshd_config
 
+# Expose SSH port
 EXPOSE 22
 
-CMD bash -c 'echo "$SSH_KEY" > /root/.ssh/authorized_keys && chmod 600 /root/.ssh/authorized_keys && /usr/sbin/sshd -D -ddd'
+# Start SSH service
+CMD ["/usr/sbin/sshd", "-D"]
+
+

@@ -6,19 +6,16 @@ services:
       context: .
       dockerfile: Dockerfile.gateway
     container_name: gateway
-    # environment:
-    #   - SSH_KEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDejbq0RvAYNESUT6PBjs4sGT/EW6crvdF64wPoI+l5toy+G02nSsSeT9kDz07Sy/DV6wZUl51BLIG820CAXrmNCSmmj0xlzGxZK1GTv8RvNJT1gLJ+vSkpndbE/jYUtwRlyicQVXtILojJpF9JnkhtvuaPdgazJH0Tg00IXUSFy/b6LVhR/S5ouTF2KmraKDLPyuPPgV0SIvXFKncVQPGa+6u0poCi2g/yE+Aja7kOuL37vJ0pqlNhREA7ndUwiH90PmyDup64bmQumUQSZDAhMwsbWqvzoRbynh5HnHMvL3EOwPGDUuksIzb6VOtn2stGYhGao6zjWjrOkC6rnsgnpBx4y6uIp+hj8qGTFtoU3KZb/AJX9phVoxutgKVSYPJW2tLgIZZlUktF1siCMcQLYA8sQxKnimWHzC52xbLa6MD8zSF/XaJNa/IY6xgUGMyP5ok0G5+ENuDCDiSiXdMLGpSitu78ssFP86QG+Af+rB4WGV7IbaROjhL+6YCsuBE= eon@torbalan   # You can replace this with your actual SSH public key
+    volumes:
+      - /home/eon/ssh_keys:/root/ssh_keys
     ports:
-      - "2222:22"  # Expose SSH port to the host
+      - "22222:22"
     networks:
       internal_net:
         ipv4_address: 192.168.1.100
-    volumes:
-      - /home/eon/.ssh/id_rsa.pub:/root/.ssh/authorized_keys
 
   fake_switch_1:
     container_name: switch_1
-    # image: fake_switch
     build:
       context: .
       dockerfile: Dockerfile
@@ -112,3 +109,5 @@ networks:
       config:
         - subnet: 192.168.1.0/24
 
+
+#       - SSH_KEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDejbq0RvAYNESUT6PBjs4sGT/EW6crvdF64wPoI+l5toy+G02nSsSeT9kDz07Sy/DV6wZUl51BLIG820CAXrmNCSmmj0xlzGxZK1GTv8RvNJT1gLJ+vSkpndbE/jYUtwRlyicQVXtILojJpF9JnkhtvuaPdgazJH0Tg00IXUSFy/b6LVhR/S5ouTF2KmraKDLPyuPPgV0SIvXFKncVQPGa+6u0poCi2g/yE+Aja7kOuL37vJ0pqlNhREA7ndUwiH90PmyDup64bmQumUQSZDAhMwsbWqvzoRbynh5HnHMvL3EOwPGDUuksIzb6VOtn2stGYhGao6zjWjrOkC6rnsgnpBx4y6uIp+hj8qGTFtoU3KZb/AJX9phVoxutgKVSYPJW2tLgIZZlUktF1siCMcQLYA8sQxKnimWHzC52xbLa6MD8zSF/XaJNa/IY6xgUGMyP5ok0G5+ENuDCDiSiXdMLGpSitu78ssFP86QG+Af+rB4WGV7IbaROjhL+6YCsuBE= eon@torbalan   # You can replace this with your actual SSH public key
