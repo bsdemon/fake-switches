@@ -256,3 +256,11 @@ or build docker image and run it:
 docker build -t fake_switch .
 docker run --name fake_syrotech_gpon -d -p 10022:22 -p 10023:23 -e SWITCH_MODEL=syrotech_generic fake_switch
 ```
+
+Fast connection test
+```
+ssh -fN -L 10023:192.168.1.101:23 -i id_rsa_fake -p 22222 root@localhost
+telnet localhost 10023
+ps -aux | grep ssh
+kill PID_of_ssh # to stop forwarding
+```
