@@ -8,7 +8,7 @@ services:
       - "22222:22"
     networks:
       internal_net:
-        ipv4_address: 192.168.1.100
+        ipv4_address: 192.168.27.100
 
   fake_switch_1:
     container_name: switch_1
@@ -19,7 +19,7 @@ services:
       - SWITCH_MODEL=syrotech_generic
     networks:
       internal_net:
-        ipv4_address: 192.168.1.101
+        ipv4_address: 192.168.27.101
 
   fake_switch_2:
     container_name: switch_2
@@ -30,7 +30,7 @@ services:
       - SWITCH_MODEL=syrotech_generic
     networks:
       internal_net:
-        ipv4_address: 192.168.1.102
+        ipv4_address: 192.168.27.102
 
   fake_switch_3:
     container_name: switch_3
@@ -41,7 +41,7 @@ services:
       - SWITCH_MODEL=syrotech_generic
     networks:
       internal_net:
-        ipv4_address: 192.168.1.103
+        ipv4_address: 192.168.27.103
 
   fake_switch_4:
     container_name: switch_4
@@ -52,7 +52,7 @@ services:
       - SWITCH_MODEL=syrotech_generic
     networks:
       internal_net:
-        ipv4_address: 192.168.1.104
+        ipv4_address: 192.168.27.104
 
   fake_switch_5:
     container_name: switch_5
@@ -63,7 +63,7 @@ services:
       - SWITCH_MODEL=syrotech_generic
     networks:
       internal_net:
-        ipv4_address: 192.168.1.105
+        ipv4_address: 192.168.27.105
 
   fake_switch_6:
     container_name: switch_6
@@ -74,7 +74,7 @@ services:
       - SWITCH_MODEL=syrotech_generic
     networks:
       internal_net:
-        ipv4_address: 192.168.1.106
+        ipv4_address: 192.168.27.106
 
   fake_switch_7:
     container_name: switch_7
@@ -85,7 +85,7 @@ services:
       - SWITCH_MODEL=syrotech_generic
     networks:
       internal_net:
-        ipv4_address: 192.168.1.107
+        ipv4_address: 192.168.27.107
 
   fake_switch_8:
     container_name: switch_8
@@ -96,11 +96,11 @@ services:
       - SWITCH_MODEL=syrotech_generic
     networks:
       internal_net:
-        ipv4_address: 192.168.1.108
+        ipv4_address: 192.168.27.108
 
 networks:
   internal_net:
     driver: bridge
     ipam:
       config:
-        - subnet: 192.168.1.0/24
+        - subnet: 192.168.27.0/24
