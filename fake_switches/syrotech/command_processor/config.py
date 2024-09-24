@@ -54,9 +54,9 @@ class ConfigCommandProcessor(BaseCommandProcessor):
     def do_debug_mode(self, *args):
         self.move_to(self.debug_mode)
         
-    def do_reboot(self):
-        self.write_line("Rebooting...")
-        self.is_done = True
+    # def do_reboot(self):
+    #     self.write_line("Rebooting...")
+    #     self.is_done = True
         
     def do_interface(self, *args):
         interface_name = self.interface_separator.join(args)

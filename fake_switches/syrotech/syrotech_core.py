@@ -122,40 +122,7 @@ class Syrotech_EPON_OLT_Core(SyrotechOLTCore):
                [Port("GigabitEthernet0/{0}".format(p + 1)) for p in range(2)] + \
                [Port("EPON0/{0}".format(p + 1)) for p in range(2)]
                
-
+# GPON0/1:1\n\x1b[11C2K05X\n\x1b[32Cdefault\n\x1b[55Csn\n\x1b[63CPPCT924A9747\n\n
 gpon_onus_list = [
-        "GPON0/1:1  unknown              default                sn      GNXS9390051b",
-        "GPON0/1:2  unknown              default                sn      GNXSb2b006bd",
-        "GPON0/1:3  unknown              default                sn      GNXSb2b006a6",
-        "GPON0/1:4  unknown              default                sn      GPON0001c160",
-        "GPON0/1:5  unknown              default                sn      GNXS62600911",
-        "GPON0/1:6  unknown              default                sn      GNXS22606911",
-        "GPON0/3:1  unknown              default                sn      GPON0073b5c6",
-        "GPON0/3:2  unknown              default                sn      RLEM4a3bf46e",
-        "GPON0/3:3  unknown              default                sn      PPCT924a2fc7",
-        "GPON0/3:4  unknown              default                sn      XPON21924586",
-        "GPON0/3:5  unknown              default                sn      GNXS93305a8d",
-        "GPON0/3:6  unknown              default                sn      GNXS62600911",
-        "GPON0/3:7  unknown              default                sn      DBCG1c359a72",
-        "GPON0/3:8  unknown              default                sn      XPON495ba7f8",
-        "GPON0/3:9  unknown              default                sn      MONU00d5e0d3",
-        "GPON0/3:10 unknown              default                sn      GNXS81900db1",
-        "GPON0/3:11 unknown              default                sn      XPONd000d770",
-        "GPON0/3:12 unknown              default                sn      GNXS23800755",
-        "GPON0/3:13 unknown              default                sn      GPON002ef898",
-        "GPON0/3:14 unknown              default                sn      GPON0015ff20",
-        "GPON0/3:15 unknown              default                sn      PPCT92be0b1c",
-        "GPON0/3:16 unknown              default                sn      RLGM4aae98d0",
-        "GPON0/3:17 unknown              default                sn      GNXS010c7530",
-        "GPON0/3:18 unknown              default                sn      GPON0064bb90",
-        "GPON0/3:19 unknown              default                sn      GNXS9290180f",
-        "GPON0/3:20 unknown              default                sn      GPON0043ae20",
-        "GPON0/3:21 unknown              default                sn      XPON498303a0",
-        "GPON0/3:22 unknown              default                sn      GNXSb2b006ac",
-        "GPON0/3:23 unknown              default                sn      PPCT92bae492",
-        "GPON0/3:24 unknown              default                sn      XPON4939d2e0",
-        "GPON0/3:25 unknown              default                sn      XPON0025b9e9",
-        "GPON0/3:26 unknown              default                sn      RLGM4a567760",
-        "GPON0/3:27 unknown              default                sn      GNXS1631188c",
-        "GPON0/3:28 unknown              default                sn      GPON004db127",
-        ]
+        "GPON0/1:1\n\x1b[11C2K05X\n\x1b[32Cdefault\n\x1b[55Csn\n\x1b[63CPPCT924A9747\n\n",
+        "GPON0/1:3\n\x1b[11unknown\n\x1b[32Cdefault\n\x1b[55Csn\n\x1b[63CPPCT92467809\n\n"]
