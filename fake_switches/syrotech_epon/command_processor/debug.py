@@ -26,19 +26,26 @@ class DebugCommandProcessor(BaseCommandProcessor):
     def get_prompt(self):
         return f"{self.switch_configuration.name}(debug)# "
 
-
     def do_exit(self):
         self.is_done = True
 
     def show_unknown_command_error_message(self):
         self.write_line("% Unknown command")
 
-    def do_upload_tftp_configuration(self, file, ip):
-        self.write_line(f"Trying to upload {file} to server {ip}, please wait...")
-        self.write_line("2024/09/04 12:58:16   Upload File Success      upload syro-g-test-telent.cfg success")
+    def do_upload_tftp_configuration(self, *args):
+        self.logger.debug(f"ARGS ----------------> {args}")
+        self.write_line(
+            f"Trying to upload {args[2]} to server {args[3]}, please wait..."
+        )
+        self.write_line(
+            "2024/09/04 12:58:16   Upload File Success      upload syro-g-test-telent.cfg success"
+        )
         self.write_line("")
-    
-    def do_download_tftp_configuration(self, file, ip):
-        self.write_line(f"Trying to download configuration {file} from TFTP server {ip}")
+
+    def do_download_tftp_configuration(self, *args):
+        self.logger.debug(f"ARGS ----------------> {args}")
+        self.write_line(
+            f"Trying to download configuration {args[2]} from TFTP server {args[3]}"
+        )
         self.write_line("Flashing configuration...")
         self.write_line("")

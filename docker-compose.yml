@@ -16,7 +16,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - SWITCH_MODEL=syrotech_generic
+      - SWITCH_MODEL=syrotech_gpon
     networks:
       internal_net:
         ipv4_address: 192.168.27.101
@@ -27,7 +27,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - SWITCH_MODEL=syrotech_generic
+      - SWITCH_MODEL=syrotech_epon
     networks:
       internal_net:
         ipv4_address: 192.168.27.102
@@ -38,7 +38,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - SWITCH_MODEL=syrotech_generic
+      - SWITCH_MODEL=syrotech_gpon
     networks:
       internal_net:
         ipv4_address: 192.168.27.103
@@ -49,7 +49,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - SWITCH_MODEL=syrotech_generic
+      - SWITCH_MODEL=syrotech_gpon
     networks:
       internal_net:
         ipv4_address: 192.168.27.104
@@ -60,7 +60,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - SWITCH_MODEL=syrotech_generic
+      - SWITCH_MODEL=syrotech_gpon
     networks:
       internal_net:
         ipv4_address: 192.168.27.105
@@ -71,7 +71,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - SWITCH_MODEL=syrotech_generic
+      - SWITCH_MODEL=syrotech_gpon
     networks:
       internal_net:
         ipv4_address: 192.168.27.106
@@ -82,7 +82,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - SWITCH_MODEL=syrotech_generic
+      - SWITCH_MODEL=syrotech_gpon
     networks:
       internal_net:
         ipv4_address: 192.168.27.107
@@ -93,7 +93,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - SWITCH_MODEL=syrotech_generic
+      - SWITCH_MODEL=syrotech_gpon
     networks:
       internal_net:
         ipv4_address: 192.168.27.108

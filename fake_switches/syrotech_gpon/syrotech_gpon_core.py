@@ -15,20 +15,26 @@
 import logging
 
 from fake_switches import switch_core
-from fake_switches.syrotech.command_processor.config import ConfigCommandProcessor
-from fake_switches.syrotech.command_processor.config_interface import ConfigInterfaceCommandProcessor
-from fake_switches.syrotech.command_processor.default import DefaultCommandProcessor
-from fake_switches.syrotech.command_processor.enabled import EnabledCommandProcessor
-from fake_switches.syrotech.command_processor.piping import PipingProcessor
-from fake_switches.syrotech.command_processor.debug import DebugCommandProcessor
+from fake_switches.syrotech_gpon.command_processor.config import ConfigCommandProcessor
+from fake_switches.syrotech_gpon.command_processor.config_interface import (
+    ConfigInterfaceCommandProcessor,
+)
+from fake_switches.syrotech_gpon.command_processor.default import (
+    DefaultCommandProcessor,
+)
+from fake_switches.syrotech_gpon.command_processor.enabled import (
+    EnabledCommandProcessor,
+)
+from fake_switches.syrotech_gpon.command_processor.piping import PipingProcessor
+from fake_switches.syrotech_gpon.command_processor.debug import DebugCommandProcessor
 from fake_switches.command_processing.shell_session import ShellSession
 from fake_switches.switch_configuration import Port
 from fake_switches.terminal import LoggingTerminalController
 
 
-class BaseSyrotechOLTCore(switch_core.SwitchCore):
+class BaseSyrotechGPONOLTCore(switch_core.SwitchCore):
     def __init__(self, switch_configuration):
-        super(BaseSyrotechOLTCore, self).__init__(switch_configuration)
+        super(BaseSyrotechGPONOLTCore, self).__init__(switch_configuration)
         self.switch_configuration.add_vlan(self.switch_configuration.new("Vlan", 1))
         self.switch_configuration.onu_list = gpon_onus_list
         self.logger = None
@@ -39,7 +45,9 @@ class BaseSyrotechOLTCore(switch_core.SwitchCore):
         self.last_connection_id += 1
 
         self.logger = logging.getLogger(
-            "fake_switches.Syrotech.%s.%s.%s" % (self.switch_configuration.name, self.last_connection_id, protocol))
+            "fake_switches.Syrotech.%s.%s.%s"
+            % (self.switch_configuration.name, self.last_connection_id, protocol)
+        )
 
         processor = self.new_command_processor()
         if not self.switch_configuration.auto_enabled:
@@ -49,7 +57,8 @@ class BaseSyrotechOLTCore(switch_core.SwitchCore):
             self.switch_configuration,
             LoggingTerminalController(self.logger, terminal_controller),
             self.logger,
-            PipingProcessor(self.logger))
+            PipingProcessor(self.logger),
+        )
         return SyrotechShellSession(processor)
 
     def new_command_processor(self):
@@ -80,7 +89,7 @@ class BaseSyrotechOLTCore(switch_core.SwitchCore):
         ]
 
 
-class SyrotechGPONOLTCore(BaseSyrotechOLTCore):
+class SyrotechGPONOLTCore(BaseSyrotechGPONOLTCore):
     def __init__(self, switch_configuration):
         super(SyrotechGPONOLTCore, self).__init__(switch_configuration)
         self.switch_configuration.add_vlan(self.switch_configuration.new("Vlan", 1))
@@ -89,12 +98,12 @@ class SyrotechGPONOLTCore(BaseSyrotechOLTCore):
         self.last_connection_id = 0
         self.switch_configuration.name = "syrotech-gpon"
         # self.reboot_console = self.new_command_processor()
-    
+
     def new_command_processor(self):
         return EnabledCommandProcessor(
             config=ConfigCommandProcessor(
                 config_interface=ConfigInterfaceCommandProcessor(),
-                debug=DebugCommandProcessor()
+                debug=DebugCommandProcessor(),
             )
         )
 
@@ -110,19 +119,25 @@ class SyrotechShellSession(ShellSession):
 class Syrotech_GPON_OLT_Core(SyrotechOLTCore):
     @staticmethod
     def get_default_ports():
-        return [Port("FastEthernet0/{0}".format(p + 1)) for p in range(24)] + \
-               [Port("GigabitEthernet0/{0}".format(p + 1)) for p in range(2)] + \
-               [Port("GPON0/{0}".format(p + 1)) for p in range(2)]
+        return (
+            [Port("FastEthernet0/{0}".format(p + 1)) for p in range(24)]
+            + [Port("GigabitEthernet0/{0}".format(p + 1)) for p in range(2)]
+            + [Port("GPON0/{0}".format(p + 1)) for p in range(2)]
+        )
 
 
-class Syrotech_EPON_OLT_Core(SyrotechOLTCore):
-    @staticmethod
-    def get_default_ports():
-        return [Port("FastEthernet0/{0}".format(p + 1)) for p in range(48)] + \
-               [Port("GigabitEthernet0/{0}".format(p + 1)) for p in range(2)] + \
-               [Port("EPON0/{0}".format(p + 1)) for p in range(2)]
-               
+# class Syrotech_EPON_OLT_Core(SyrotechOLTCore):
+#     @staticmethod
+#     def get_default_ports():
+#         return (
+#             [Port("FastEthernet0/{0}".format(p + 1)) for p in range(48)]
+#             + [Port("GigabitEthernet0/{0}".format(p + 1)) for p in range(2)]
+#             + [Port("EPON0/{0}".format(p + 1)) for p in range(2)]
+#         )
+
+
 # GPON0/1:1\n\x1b[11C2K05X\n\x1b[32Cdefault\n\x1b[55Csn\n\x1b[63CPPCT924A9747\n\n
 gpon_onus_list = [
-        "GPON0/1:1\n\x1b[11C2K05X\n\x1b[32Cdefault\n\x1b[55Csn\n\x1b[63CPPCT924A9747\n\n",
-        "GPON0/1:3\n\x1b[11unknown\n\x1b[32Cdefault\n\x1b[55Csn\n\x1b[63CPPCT92467809\n\n"]
+    "GPON0/1:1\n\x1b[11C2K05X\n\x1b[32Cdefault\n\x1b[55Csn\n\x1b[63CPPCT924A9747\n\n",
+    "GPON0/1:3\n\x1b[11unknown\n\x1b[32Cdefault\n\x1b[55Csn\n\x1b[63CPPCT92467809\n\n",
+]

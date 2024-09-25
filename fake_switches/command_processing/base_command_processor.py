@@ -16,7 +16,9 @@ from fake_switches.command_processing.command_processor import CommandProcessor
 
 
 class BaseCommandProcessor(CommandProcessor):
-    def init(self, switch_configuration, terminal_controller, logger, piping_processor, *args):
+    def init(
+        self, switch_configuration, terminal_controller, logger, piping_processor, *args
+    ):
         """
         :type switch_configuration: fake_switches.switch_configuration.SwitchConfiguration
         :type terminal_controller: fake_switches.terminal.TerminalController
@@ -36,7 +38,6 @@ class BaseCommandProcessor(CommandProcessor):
         self.onu_configuration = None
 
     def process_command(self, line):
-        print(f"Inside BaseCommandProcessor process_command {line}")
         if " | " in line:
             line, piping_command = line.split(" | ", 1)
             piping_started = self.activate_piping(piping_command)
@@ -46,18 +47,21 @@ class BaseCommandProcessor(CommandProcessor):
         processed = False
 
         if self.sub_processor:
-            print(f"Delegating {line} to {self.sub_processor}")
             processed = self.delegate_to_sub_processor(line)
 
         if not processed:
-            print(f"Processing {line} in {self.sub_processor}")
             if self.continuing_to:
                 processed = self.continue_command(line)
             else:
-                print(f"EXECUTE -->>{line} to {self.sub_processor}")
                 processed = self.parse_and_execute_command(line)
 
-            if not self.continuing_to and not self.awaiting_keystroke and not self.is_done and processed and not self.sub_processor:
+            if (
+                not self.continuing_to
+                and not self.awaiting_keystroke
+                and not self.is_done
+                and processed
+                and not self.sub_processor
+            ):
                 self.finish_piping()
                 self.show_prompt()
 
@@ -67,7 +71,10 @@ class BaseCommandProcessor(CommandProcessor):
         if line.strip():
             func, args = self.get_command_func(line)
             if not func:
-                self.logger.debug("%s can't process : %s, falling back to parent" % (self.__class__.__name__, line))
+                self.logger.debug(
+                    "%s can't process : %s, falling back to parent"
+                    % (self.__class__.__name__, line)
+                )
                 return False
             else:
                 func(*args)
@@ -87,20 +94,24 @@ class BaseCommandProcessor(CommandProcessor):
         return processed
 
     def move_to(self, new_processor, *args):
-        new_processor.init(self.switch_configuration,
-                           self.terminal_controller,
-                           self.logger,
-                           self.piping_processor,
-                           *args)
+        new_processor.init(
+            self.switch_configuration,
+            self.terminal_controller,
+            self.logger,
+            self.piping_processor,
+            *args,
+        )
         self.sub_processor = new_processor
-        self.logger.info("new subprocessor = {}".format(self.sub_processor.__class__.__name__))
+        self.logger.info(
+            "new subprocessor = {}".format(self.sub_processor.__class__.__name__)
+        )
         self.sub_processor.show_prompt()
 
     def continue_to(self, continuing_action):
         self.continuing_to = continuing_action
 
     def get_continue_command_func(self, cmd):
-        return getattr(self, 'continue_' + cmd, None)
+        return getattr(self, "continue_" + cmd, None)
 
     def write(self, data):
         filtered = self.pipe(data)
@@ -108,7 +119,7 @@ class BaseCommandProcessor(CommandProcessor):
             self.terminal_controller.write(filtered)
 
     def write_line(self, data):
-        self.write(data + u"\n")
+        self.write(data + "\n")
 
     def show_prompt(self):
         if self.sub_processor is not None:

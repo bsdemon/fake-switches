@@ -35,37 +35,40 @@ class ConfigCommandProcessor(BaseCommandProcessor):
         self.write_line("% Unknown command.")
 
     def do_show(self, *args):
-        if "onu info".startswith(args[0]):
+        if "onu status all".startswith(args[0]):
             self.show_onu_info()
+        elif "time":
+            self.write_line(
+                "The olt has been running for 0 Days 0 Hours 1 Minutes 54 Seconds"
+            )
         else:
             self.write_line("")
             self.write_line("% Unknown command.")
         self.write_line("")
         return
-    
+
     def show_onu_info(self):
         all_data = self.switch_configuration.onu_list
-        self.write_line("Onuindex   Model                Profile                Mode    AuthInfo ")
-        self.write_line("---------------------------------------------------------------------------------------------")
+        self.write_line(
+            "ONU-ID      Status    MAC  Address         Distance(m)  RTT(TQ) LastRegTime             LastDeregTime           LastDeregReason    AliveTime    Upgrade"
+        )
+        self.write_line(
+            "------      ------    ------------         -----------  ------  -----------             -------------           ---------------   ------------ -------"
+        )
         for l in all_data:
             self.write_line(l)
             self.write_line("")
 
     def do_debug_mode(self, *args):
         self.move_to(self.debug_mode)
-        
-    # def do_reboot(self):
-    #     self.write_line("Rebooting...")
-    #     self.is_done = True
-        
+
     def do_interface(self, *args):
-        interface_name = self.interface_separator.join(args)
+        # Syrotech epon interface if "interface epon EPON0/1". So, we need to remove epon. Fake switch does not support this.
+        interface_name = self.interface_separator.join(args[-1])
         for p in self.switch_configuration.ports:
             print("Port: ", p.name)
 
-        if port := self.switch_configuration.get_port_by_partial_name(
-            interface_name
-        ):
+        if port := self.switch_configuration.get_port_by_partial_name(interface_name):
             self.move_to(self.config_interface_processor, port)
         elif m := re.match(
             "vlan{separator}(\d+)".format(separator=self.interface_separator),
@@ -75,7 +78,7 @@ class ConfigCommandProcessor(BaseCommandProcessor):
             new_vlan_interface = self.make_vlan_port(vlan_id, interface_name)
             self.switch_configuration.add_port(new_vlan_interface)
             self.move_to(self.config_interface_processor, new_vlan_interface)
-        elif interface_name.lower().startswith('port-channel'):
+        elif interface_name.lower().startswith("port-channel"):
             new_int = self.make_aggregated_port(interface_name)
             self.switch_configuration.add_port(new_int)
             self.move_to(self.config_interface_processor, new_int)
@@ -84,13 +87,12 @@ class ConfigCommandProcessor(BaseCommandProcessor):
 
     def do_reboot(self):
         self.write("Are you sure want to reboot system? [Y/N]")
-        self.replace_input = ''
+        self.replace_input = ""
         self.continue_to(self.continue_rebooting)
 
     def continue_rebooting(self, line):
         self.replace_input = False
         if line.lower() == "y":
             self.write_line("Rebooting!")
-            raise SystemExit
         else:
             self.write_line("")
